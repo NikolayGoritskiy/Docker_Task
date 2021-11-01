@@ -1,2 +1,6 @@
+FROM node:slim
+COPY ./ .
+RUN npm i && npm audit fix && npm run build
+
 FROM nginx:alpine
-COPY /frontend/public /usr/share/nginx/html
+COPY /build /usr/share/nginx/html
