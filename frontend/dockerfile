@@ -1,6 +1,8 @@
-FROM node:slim
+FROM node:15.10.0-stretch-slim as build
+WORKDIR /app
 COPY ./ .
-RUN npm i && npm audit fix && npm run build
+RUN npm i && npm run build
 
 FROM nginx:alpine
-COPY /build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
+RUN ls -l /usr/share/nginx/html
