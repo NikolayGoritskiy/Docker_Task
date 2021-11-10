@@ -28,7 +28,6 @@ services:
     build:
       context: ./lib_catalog
       dockerfile: dockerfile
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     networks:
       - docker_task3
     ports:
@@ -59,8 +58,8 @@ services:
       driver: "json-file"
     networks:
       - docker_task3
-#    volumes:
-#      - database:/var/lib/postgresql/data
+    volumes:
+      - database:/var/lib/postgresql/data
     deploy:
       resources:
         limits:
@@ -74,5 +73,5 @@ networks:
   docker_task3:
     driver: bridge
 
-#volumes:
-#  database:
+volumes:
+  database:
