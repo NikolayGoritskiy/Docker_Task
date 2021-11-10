@@ -3,8 +3,8 @@ services:
   frontend:
     restart: unless-stopped
     build:
-      context: .
-      dockerfile: /frontend/dockerfile
+      context: ./frontend
+      dockerfile: dockerfile
     networks:
       - docker_task3
     ports:
@@ -13,14 +13,22 @@ services:
       driver: "json-file"
       options:
         max-size: 100m
+    deploy:
+      resources:
+        limits:
+          cpus: '1.50'
+          memory: 250M
+        reservations:
+          cpus: '0.50'
+          memory: 120M
 
 
   backend:
     restart: unless-stopped
     build:
-      context: .
-      dockerfile: /lib_catalog/dockerfile
-    command: sh -c "python manage.py migrate"
+      context: ./lib_catalog
+      dockerfile: dockerfile
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     networks:
       - docker_task3
     ports:
@@ -31,6 +39,14 @@ services:
         max-size: 100m
     depends_on:
         - database
+    deploy:
+      resources:
+        limits:
+          cpus: '1.50'
+          memory: 250M
+        reservations:
+          cpus: '0.50'
+          memory: 120M
 
   database:
     image: postgres:latest
@@ -43,12 +59,20 @@ services:
       driver: "json-file"
     networks:
       - docker_task3
-    volumes:
-      - database:/var/lib/postgresql/data
+#    volumes:
+#      - database:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.50'
+          memory: 250M
+        reservations:
+          cpus: '0.50'
+          memory: 120M
 
 networks:
   docker_task3:
     driver: bridge
 
-volumes:
-  database:
+#volumes:
+#  database:
