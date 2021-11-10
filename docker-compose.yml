@@ -21,6 +21,7 @@ services:
     build:
       context: .
       dockerfile: /lib_catalog/dockerfile
+    command: sh -c "python manage.py migrate"
     networks:
       - docker_task3
     ports:
@@ -33,7 +34,7 @@ services:
         - database
 
   database:
-    image: postgres
+    image: postgres:latest
     restart: always
     environment:
       - POSTGRES_PASSWORD=django
@@ -44,8 +45,11 @@ services:
     networks:
       - docker_task3
     volumes:
-      - /usr/local/apps/Docker_Task3/postgresql/:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
 
 networks:
   docker_task3:
     driver: bridge
+
+volumes:
+  database:
