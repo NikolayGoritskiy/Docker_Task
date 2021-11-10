@@ -1,0 +1,51 @@
+version: "3"
+services:
+
+  frontend:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: /frontend/dockerfile
+    networks:
+      - docker_task3
+    ports:
+    - 3000:80
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 100m
+
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: /lib_catalog/dockerfile
+    networks:
+      - docker_task3
+    ports:
+      - 8000:8000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 100m
+    depends_on:
+        - database
+
+  database:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=django
+      - POSTGRES_USER=django
+      - POSTGRES_DB=django
+    logging:
+      driver: "json-file"
+    networks:
+      - docker_task3
+    volumes:
+      - /usr/local/apps/Docker_Task3/postgresql/:/var/lib/postgresql/data
+
+networks:
+  docker_task3:
+    driver: bridge
